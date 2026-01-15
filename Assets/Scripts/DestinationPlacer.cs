@@ -35,7 +35,23 @@ public class DestinationPlacer : MonoBehaviour
                 {
                     spawnedDestination.transform.position = adjustedPosition;
                 }
+
+                // Save destination to Firebase
+                SaveDestinationToFirebase(hitPose.position);
             }
+        }
+    }
+
+    private async void SaveDestinationToFirebase(Vector3 position)
+    {
+        if (FirebaseManager.Instance != null && FirebaseManager.Instance.GetCurrentUser() != null)
+        {
+            // Convert position to latitude/longitude (simplified - you may want to integrate with GPSLocation)
+            float latitude = position.x;
+            float longitude = position.z;
+            
+            string destinationName = "Destination_" + System.DateTime.Now.Ticks;
+            await FirebaseManager.Instance.SaveDestinationAsync(destinationName, latitude, longitude);
         }
     }
 }
